@@ -1,0 +1,203 @@
+もちろんです！基本的なHTML、CSS、およびJavaScriptを使用して、ローカル環境で動作するFAQサイトを作成するためのコードの例を以下に示します。ただし、これは基本的な例ですので、必要に応じてカスタマイズしてください。
+
+1. **index.html**（HTMLファイル）
+
+```html
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQサイト</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>よくある質問</h1>
+    </header>
+    <main>
+        <input type="text" id="searchInput" placeholder="キーワードを入力">
+        <ul id="faqList">
+            <li>
+                <h2>質問1: Lorem ipsum dolor sit amet?</h2>
+                <p>回答: Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            </li>
+            <li>
+                <h2>質問2: Nulla facilisi?</h2>
+                <p>回答: Nulla facilisi. Sed euismod eros nec purus aliquam.</p>
+            </li>
+            <!-- 他の質問と回答も追加 -->
+        </ul>
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>
+```
+
+2. **styles.css**（CSSファイル）
+
+```css
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 1rem 0;
+}
+
+main {
+    padding: 2rem;
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+li {
+    margin-bottom: 2rem;
+}
+```
+
+3. **script.js**（JavaScriptファイル）
+
+```javascript
+const searchInput = document.getElementById('searchInput');
+const faqList = document.getElementById('faqList');
+
+searchInput.addEventListener('input', function () {
+    const searchTerm = searchInput.value.toLowerCase();
+    const faqItems = faqList.getElementsByTagName('li');
+
+    for (const item of faqItems) {
+        const question = item.getElementsByTagName('h2')[0].textContent.toLowerCase();
+        const answer = item.getElementsByTagName('p')[0].textContent.toLowerCase();
+
+        if (question.includes(searchTerm) || answer.includes(searchTerm)) {
+            item.style.display = 'block';
+        } else {
+            item.style.display = 'none';
+        }
+    }
+});
+```
+
+
+
+
+
+
+
+
+
+
+
+
+もちろんです！カテゴリを追加し、カテゴリ毎に絞り込みができるようにするためのコード例と、FAQの内容をCSVファイルで管理するための方法を以下に示します。
+
+1. **index.html**（HTMLファイル）
+
+```html
+<!-- 以前のコードを保持 -->
+
+<div id="categoryButtons">
+    <button class="categoryButton" data-category="all">すべて</button>
+    <button class="categoryButton" data-category="category1">カテゴリ1</button>
+    <button class="categoryButton" data-category="category2">カテゴリ2</button>
+    <!-- 必要なカテゴリボタンを追加 -->
+</div>
+```
+
+2. **script.js**（JavaScriptファイル）
+
+```javascript
+// 以前のコードを保持
+
+const categoryButtons = document.querySelectorAll('.categoryButton');
+
+categoryButtons.forEach(button => {
+    button.addEventListener('click', function () {
+        const selectedCategory = button.getAttribute('data-category');
+        filterByCategory(selectedCategory);
+    });
+});
+
+function filterByCategory(category) {
+    const faqItems = faqList.getElementsByTagName('li');
+
+    for (const item of faqItems) {
+        const itemCategory = item.getAttribute('data-category');
+
+        if (category === 'all' || itemCategory === category) {
+            item.style.display = 'block';
+        } else {
+            item.style.display = 'none';
+        }
+    }
+}
+```
+
+3. **faq.csv**（CSVファイル、コンマ区切り）
+
+```csv
+質問,回答,カテゴリ
+Lorem ipsum dolor sit amet?,Lorem ipsum dolor sit amet, consectetur adipiscing elit.,category1
+Nulla facilisi?,Nulla facilisi. Sed euismod eros nec purus aliquam.,category2
+<!-- 他の質問と回答も追加 -->
+```
+
+4. **script.js**（CSVファイルの読み込みを追加）
+
+```javascript
+// 以前のコードを保持
+
+// CSVファイルの読み込みと解析
+fetch('faq.csv')
+    .then(response => response.text())
+    .then(data => {
+        const rows = data.split('\n');
+        const faqItems = [];
+
+        for (const row of rows) {
+            const [question, answer, category] = row.split(',');
+            faqItems.push({ question, answer, category });
+        }
+
+        generateFAQList(faqItems);
+    })
+    .catch(error => console.error('CSV読み込みエラー:', error));
+
+function generateFAQList(items) {
+    faqList.innerHTML = '';
+
+    items.forEach(item => {
+        const li = document.createElement('li');
+        li.setAttribute('data-category', item.category);
+
+        const question = document.createElement('h2');
+        question.textContent = item.question;
+
+        const answer = document.createElement('p');
+        answer.textContent = '回答: ' + item.answer;
+
+        li.appendChild(question);
+        li.appendChild(answer);
+        faqList.appendChild(li);
+    });
+}
+```
+
+これらの変更を加えたコードを使うと、FAQのカテゴリ別絞り込みが可能になり、FAQの内容は`faq.csv`ファイルで管理できるようになります。`faq.csv`に新しい質問やカテゴリを追加する際は、それに合わせてファイルのフォーマットを遵守するようにしてください。
+
+
+
+
+
+
+これらのファイルをそれぞれ作成し、同じディレクトリに保存します。その後、ブラウザで`index.html`を開くと、FAQサイトが表示され、キーワード検索が可能になります。必要に応じて質問と回答を追加、編集してください。また、デザインや機能をさらにカスタマイズすることもできます。
